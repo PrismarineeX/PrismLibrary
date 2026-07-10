@@ -1018,8 +1018,8 @@ function Section.New(tab, config)
 
 	-- FIX: Shifted slightly right (12 instead of 8)
 	self.Instance = New("Frame", {
-		Size = UDim2.new(1, -16, 0, 36),
-		Position = UDim2.new(0, 14, 0, 0),
+		Size = UDim2.new(1, -20, 0, 36),
+		Position = UDim2.new(0, 16, 0, 0),
 		BackgroundColor3 = Theme.Content,
 		BackgroundTransparency = Theme.Transparency.Content,
 		Parent = tab.Content,
@@ -1234,8 +1234,8 @@ function Window.New(config)
 
 	-- FIX: More rounded corners (12px) for smoother look
 	self.MainFrame = New("Frame", {
-		Size = UDim2.new(0, 460, 0, 300),
-		Position = UDim2.new(0.5, -230, 0.5, -150),
+		Size = UDim2.new(0, 440, 0, 280),
+		Position = UDim2.new(0.5, -220, 0.5, -140),
 		BackgroundColor3 = Theme.Background,
 		BackgroundTransparency = Theme.Transparency.Background,
 		Parent = self.ScreenGui,
@@ -1244,19 +1244,9 @@ function Window.New(config)
 	Round(self.MainFrame, 16)
 	Stroke(self.MainFrame)
 
-	self.TitleBar = New("Frame", {
-		Size = UDim2.new(1, 0, 0, 36),
-		BackgroundColor3 = Theme.Surface,
-		BackgroundTransparency = 0.2,
-		Parent = self.MainFrame,
-	})
-	Round(self.TitleBar, 16)
-	local titleGrad = Gradient(self.TitleBar, Theme.AccentDark, Theme.Accent, 0)
-	titleGrad.Enabled = false
-
-	-- FIX: Title width adjusted for bigger buttons
+	-- Title text directly on MainFrame (no separate TitleBar frame)
 	local titleText = New("TextLabel", {
-		Size = UDim2.new(1, -140, 1, 0),
+		Size = UDim2.new(1, -140, 0, 36),
 		Position = UDim2.new(0, 16, 0, 0),
 		BackgroundTransparency = 1,
 		Font = Enum.Font.GothamBold,
@@ -1264,25 +1254,18 @@ function Window.New(config)
 		TextColor3 = Theme.Text,
 		TextSize = 15,
 		TextXAlignment = Enum.TextXAlignment.Left,
-		Parent = self.TitleBar,
+		Parent = self.MainFrame,
 	})
 	Gradient(titleText, Theme.Accent, Color3.fromRGB(200, 220, 255), 90)
 
-	self.Sidebar = New("Frame", {
+	-- TabBar directly on MainFrame (no separate Sidebar frame)
+	self.TabBar = New("ScrollingFrame", {
 		Size = UDim2.new(0, 150, 1, -36),
 		Position = UDim2.new(0, 0, 0, 36),
-		BackgroundColor3 = Theme.Content,
-		BackgroundTransparency = Theme.Transparency.Content,
-		Parent = self.MainFrame,
-		ClipsDescendants = true,
-	})
-	Round(self.Sidebar, 16)
-
-	self.TabBar = New("ScrollingFrame", {
-		Size = UDim2.new(1, 0, 1, 0),
 		BackgroundTransparency = 1,
 		ScrollBarThickness = 0,
-		Parent = self.Sidebar,
+		Parent = self.MainFrame,
+		ClipsDescendants = true,
 	})
 	local tabLayout = New("UIListLayout", { SortOrder = Enum.SortOrder.LayoutOrder, Padding = UDim.new(0, 4), Parent = self.TabBar })
 	New("UIPadding", { PaddingTop = UDim.new(0, 8), PaddingBottom = UDim.new(0, 8), Parent = self.TabBar })
@@ -1303,14 +1286,14 @@ function Window.New(config)
 	-- FIX: Bigger minimize and close buttons (52x52)
 	local minimizeBtn = New("TextButton", {
 		Size = UDim2.new(0, 36, 0, 36),
-		Position = UDim2.new(1, -88, 0.5, -18),
+		Position = UDim2.new(1, -82, 0, 0),
 		BackgroundTransparency = 1,
 		Font = Enum.Font.GothamBold,
 		Text = "−",
 		TextColor3 = Theme.TextDim,
 		TextSize = 18,
 		AutoButtonColor = false,
-		Parent = self.TitleBar,
+		Parent = self.MainFrame,
 	})
 	minimizeBtn.MouseEnter:Connect(function()
 		Tween(minimizeBtn, TweenInfo.new(0.2), { TextColor3 = Theme.Text })
@@ -1324,14 +1307,14 @@ function Window.New(config)
 
 	local closeBtn = New("TextButton", {
 		Size = UDim2.new(0, 36, 0, 36),
-		Position = UDim2.new(1, -56, 0.5, -18),
+		Position = UDim2.new(1, -56, 0, 0),
 		BackgroundTransparency = 1,
 		Font = Enum.Font.GothamBold,
 		Text = "×",
 		TextColor3 = Theme.TextDim,
 		TextSize = 20,
 		AutoButtonColor = false,
-		Parent = self.TitleBar,
+		Parent = self.MainFrame,
 	})
 	closeBtn.MouseEnter:Connect(function()
 		Tween(closeBtn, TweenInfo.new(0.2), { TextColor3 = Theme.Negative })
@@ -1343,10 +1326,10 @@ function Window.New(config)
 		self:ShowCloseConfirmation()
 	end)
 
-	MakeDraggable(self.MainFrame, self.TitleBar)
+	MakeDraggable(self.MainFrame, titleText)
 
-	local floatingSize = UDim2.new(0, 44, 0, 44)
-	local floatingPos = UDim2.new(0, 20, 0.5, -22)
+	local floatingSize = UDim2.new(0, 40, 0, 40)
+	local floatingPos = UDim2.new(0, 20, 0.5, -20)
 	local floatingIcon = "lucide:layout-grid"
 
 	self.FloatingButton = New("TextButton", {
