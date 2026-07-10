@@ -1234,8 +1234,8 @@ function Window.New(config)
 
 	-- FIX: More rounded corners (12px) for smoother look
 	self.MainFrame = New("Frame", {
-		Size = UDim2.new(0, 480, 0, 320),
-		Position = UDim2.new(0.5, -240, 0.5, -160),
+		Size = UDim2.new(0, 460, 0, 300),
+		Position = UDim2.new(0.5, -230, 0.5, -150),
 		BackgroundColor3 = Theme.Background,
 		BackgroundTransparency = Theme.Transparency.Background,
 		Parent = self.ScreenGui,
@@ -1250,7 +1250,7 @@ function Window.New(config)
 		BackgroundTransparency = 0.2,
 		Parent = self.MainFrame,
 	})
-	Round(self.TitleBar, 10)
+	Round(self.TitleBar, 16)
 	local titleGrad = Gradient(self.TitleBar, Theme.AccentDark, Theme.Accent, 0)
 	titleGrad.Enabled = false
 
@@ -1276,7 +1276,7 @@ function Window.New(config)
 		Parent = self.MainFrame,
 		ClipsDescendants = true,
 	})
-	Round(self.Sidebar, 10)
+	Round(self.Sidebar, 16)
 
 	self.TabBar = New("ScrollingFrame", {
 		Size = UDim2.new(1, 0, 1, 0),
@@ -1298,12 +1298,12 @@ function Window.New(config)
 		Parent = self.MainFrame,
 		ClipsDescendants = true,
 	})
-	Round(self.ContentArea, 10)
+	Round(self.ContentArea, 16)
 
 	-- FIX: Bigger minimize and close buttons (52x52)
 	local minimizeBtn = New("TextButton", {
 		Size = UDim2.new(0, 36, 0, 36),
-		Position = UDim2.new(1, -76, 0.5, -18),
+		Position = UDim2.new(1, -88, 0.5, -18),
 		BackgroundTransparency = 1,
 		Font = Enum.Font.GothamBold,
 		Text = "−",
