@@ -203,7 +203,7 @@ function Prismarine:CreateWindow(options)
     local ButtonContainer = Instance.new("Frame")
     ButtonContainer.Name = "Buttons"
     ButtonContainer.Size = UDim2.new(0, 70, 1, 0)
-    ButtonContainer.Position = UDim2.new(1, -75, 0, 0)
+    ButtonContainer.Position = UDim2.new(1, -78, 0, 0)
     ButtonContainer.BackgroundTransparency = 1
     ButtonContainer.Parent = TopBar
 
@@ -234,18 +234,117 @@ function Prismarine:CreateWindow(options)
 
     local MinimizeBtn = CreateTopButton("Minimize", "minus", Colors.TextDim, function()
         Minimized = not Minimized
-        if Minimized then
-            MainFrame.Size = UDim2.fromOffset(OriginalSize.X.Offset, 36)
-        else
-            MainFrame.Size = OriginalSize
-        end
+        MainFrame.Visible = false
     end)
     MinimizeBtn.Position = UDim2.fromOffset(0, 7)
 
     local CloseBtn = CreateTopButton("Close", "cross", Colors.Danger, function()
-        ScreenGui:Destroy()
+        local ConfirmFrame = Instance.new("Frame")
+        ConfirmFrame.Name = "ConfirmFrame"
+        ConfirmFrame.Size = UDim2.new(1, 0, 1, 0)
+        ConfirmFrame.BackgroundColor3 = Colors.Black
+        ConfirmFrame.BackgroundTransparency = 0.6
+        ConfirmFrame.BorderSizePixel = 0
+        ConfirmFrame.ZIndex = 100
+        ConfirmFrame.Parent = ScreenGui
+
+        local ConfirmBox = Instance.new("Frame")
+        ConfirmBox.Name = "ConfirmBox"
+        ConfirmBox.Size = UDim2.fromOffset(280, 120)
+        ConfirmBox.Position = UDim2.fromScale(0.5, 0.5)
+        ConfirmBox.AnchorPoint = Vector2.new(0.5, 0.5)
+        ConfirmBox.BackgroundColor3 = Colors.Surface
+        ConfirmBox.BackgroundTransparency = 0.05
+        ConfirmBox.BorderSizePixel = 0
+        ConfirmBox.ZIndex = 101
+        ConfirmBox.Parent = ConfirmFrame
+        RoundCorners(ConfirmBox, 12)
+        Stroke(ConfirmBox, Colors.Border, 1)
+
+        local ConfirmTitle = Instance.new("TextLabel")
+        ConfirmTitle.Name = "Title"
+        ConfirmTitle.Size = UDim2.new(1, 0, 0, 30)
+        ConfirmTitle.Position = UDim2.fromOffset(0, 12)
+        ConfirmTitle.BackgroundTransparency = 1
+        ConfirmTitle.Text = "Close Prismarine?"
+        ConfirmTitle.TextColor3 = Colors.Text
+        ConfirmTitle.TextSize = 14
+        ConfirmTitle.Font = Enum.Font.GothamBold
+        ConfirmTitle.ZIndex = 101
+        ConfirmTitle.Parent = ConfirmBox
+
+        local ConfirmText = Instance.new("TextLabel")
+        ConfirmText.Name = "Text"
+        ConfirmText.Size = UDim2.new(1, -24, 0, 20)
+        ConfirmText.Position = UDim2.fromOffset(12, 42)
+        ConfirmText.BackgroundTransparency = 1
+        ConfirmText.Text = "Are you sure you want to close the UI?"
+        ConfirmText.TextColor3 = Colors.TextDim
+        ConfirmText.TextSize = 11
+        ConfirmText.Font = Enum.Font.Gotham
+        ConfirmText.TextWrapped = true
+        ConfirmText.ZIndex = 101
+        ConfirmText.Parent = ConfirmBox
+
+        local BtnContainer = Instance.new("Frame")
+        BtnContainer.Name = "Buttons"
+        BtnContainer.Size = UDim2.new(1, -24, 0, 32)
+        BtnContainer.Position = UDim2.fromOffset(12, 76)
+        BtnContainer.BackgroundTransparency = 1
+        BtnContainer.ZIndex = 101
+        BtnContainer.Parent = ConfirmBox
+
+        local YesBtn = Instance.new("TextButton")
+        YesBtn.Name = "Yes"
+        YesBtn.Size = UDim2.new(0.48, 0, 1, 0)
+        YesBtn.BackgroundColor3 = Colors.Danger
+        YesBtn.BackgroundTransparency = 0.2
+        YesBtn.BorderSizePixel = 0
+        YesBtn.Text = "Close"
+        YesBtn.TextColor3 = Colors.White
+        YesBtn.TextSize = 12
+        YesBtn.Font = Enum.Font.GothamSemibold
+        YesBtn.ZIndex = 101
+        YesBtn.Parent = BtnContainer
+        RoundCorners(YesBtn, 6)
+
+        local NoBtn = Instance.new("TextButton")
+        NoBtn.Name = "No"
+        NoBtn.Size = UDim2.new(0.48, 0, 1, 0)
+        NoBtn.Position = UDim2.new(0.52, 0, 0, 0)
+        NoBtn.BackgroundColor3 = Colors.SurfaceLight
+        NoBtn.BackgroundTransparency = 0.3
+        NoBtn.BorderSizePixel = 0
+        NoBtn.Text = "Cancel"
+        NoBtn.TextColor3 = Colors.Text
+        NoBtn.TextSize = 12
+        NoBtn.Font = Enum.Font.GothamSemibold
+        NoBtn.ZIndex = 101
+        NoBtn.Parent = BtnContainer
+        RoundCorners(NoBtn, 6)
+        Stroke(NoBtn, Colors.Border, 1)
+
+        YesBtn.MouseEnter:Connect(function()
+            YesBtn.BackgroundColor3 = Color3.fromRGB(220, 50, 50)
+        end)
+        YesBtn.MouseLeave:Connect(function()
+            YesBtn.BackgroundColor3 = Colors.Danger
+        end)
+        YesBtn.MouseButton1Click:Connect(function()
+            ScreenGui:Destroy()
+        end)
+
+        NoBtn.MouseEnter:Connect(function()
+            NoBtn.BackgroundColor3 = Colors.Surface
+        end)
+        NoBtn.MouseLeave:Connect(function()
+            NoBtn.BackgroundColor3 = Colors.SurfaceLight
+        end)
+        NoBtn.MouseButton1Click:Connect(function()
+            ConfirmFrame:Destroy()
+        end)
     end)
-    CloseBtn.Position = UDim2.fromOffset(26, 7)
+    CloseBtn.Position = UDim2.fromOffset(28, 7)
 
     local ContentFrame = Instance.new("Frame")
     ContentFrame.Name = "Content"
@@ -559,7 +658,7 @@ function Prismarine:CreateWindow(options)
                 BindButton.BackgroundTransparency = 0.3
                 BindButton.BorderSizePixel = 0
                 BindButton.Text = default.Name ~= "Unknown" and default.Name or "None"
-                                BindButton.TextColor3 = Colors.TextDim
+                BindButton.TextColor3 = Colors.TextDim
                 BindButton.TextSize = 10
                 BindButton.Font = Enum.Font.Gotham
                 BindButton.Parent = BindFrame
@@ -693,61 +792,55 @@ function Prismarine:CreateWindow(options)
                 DropdownFrame.ClipsDescendants = true
                 DropdownFrame.AutomaticSize = Enum.AutomaticSize.Y
 
-                local DropdownButton = Instance.new("TextButton")
-                DropdownButton.Name = "Button"
-                DropdownButton.Size = UDim2.new(1, 0, 0, 28)
-                DropdownButton.BackgroundColor3 = Colors.SurfaceLight
-                DropdownButton.BackgroundTransparency = 0.3
-                DropdownButton.BorderSizePixel = 0
-                DropdownButton.Text = ""
-                DropdownButton.Parent = DropdownFrame
-                RoundCorners(DropdownButton, 6)
-                Stroke(DropdownButton, Colors.Border, 1)
+                local DisplayFrame = Instance.new("Frame")
+                DisplayFrame.Name = "Display"
+                DisplayFrame.Size = UDim2.new(1, -32, 0, 28)
+                DisplayFrame.BackgroundColor3 = Colors.SurfaceLight
+                DisplayFrame.BackgroundTransparency = 0.3
+                DisplayFrame.BorderSizePixel = 0
+                DisplayFrame.Parent = DropdownFrame
+                RoundCorners(DisplayFrame, 6)
+                Stroke(DisplayFrame, Colors.Border, 1)
 
                 local DropdownLabel = Instance.new("TextLabel")
                 DropdownLabel.Name = "Label"
-                DropdownLabel.Size = UDim2.new(1, -30, 1, 0)
+                DropdownLabel.Size = UDim2.new(1, -10, 1, 0)
                 DropdownLabel.Position = UDim2.fromOffset(10, 0)
                 DropdownLabel.BackgroundTransparency = 1
-                DropdownLabel.Text = dropName
+                DropdownLabel.Text = "Select Option"
                 DropdownLabel.TextColor3 = Colors.TextDim
                 DropdownLabel.TextSize = 11
                 DropdownLabel.Font = Enum.Font.Gotham
                 DropdownLabel.TextXAlignment = Enum.TextXAlignment.Left
-                DropdownLabel.Parent = DropdownButton
+                DropdownLabel.Parent = DisplayFrame
 
-                local DropdownArrow = CreateIcon("chevron-down", 12, DropdownButton, Colors.TextDim)
-                DropdownArrow.Position = UDim2.new(1, -22, 0, 8)
+                local DropdownArrow = Instance.new("TextButton")
                 DropdownArrow.Name = "Arrow"
+                DropdownArrow.Size = UDim2.fromOffset(28, 28)
+                DropdownArrow.Position = UDim2.new(1, -28, 0, 0)
+                DropdownArrow.BackgroundColor3 = Colors.SurfaceLight
+                DropdownArrow.BackgroundTransparency = 0.3
+                DropdownArrow.BorderSizePixel = 0
+                DropdownArrow.Text = ""
+                DropdownArrow.Parent = DropdownFrame
+                RoundCorners(DropdownArrow, 6)
+                Stroke(DropdownArrow, Colors.Border, 1)
 
-                local ItemsFrame = Instance.new("Frame")
-                ItemsFrame.Name = "Items"
-                ItemsFrame.Size = UDim2.new(1, 0, 0, 0)
-                ItemsFrame.Position = UDim2.fromOffset(0, 30)
-                ItemsFrame.BackgroundColor3 = Colors.SurfaceLight
-                ItemsFrame.BackgroundTransparency = 0.2
-                ItemsFrame.BorderSizePixel = 0
-                ItemsFrame.Visible = false
-                ItemsFrame.Parent = DropdownFrame
-                RoundCorners(ItemsFrame, 6)
-                Stroke(ItemsFrame, Colors.Border, 1)
-
-                local ItemsLayout = Instance.new("UIListLayout")
-                ItemsLayout.Padding = UDim.new(0, 1)
-                ItemsLayout.SortOrder = Enum.SortOrder.LayoutOrder
-                ItemsLayout.Parent = ItemsFrame
-
-                Padding(ItemsFrame, 2, 2, 2, 2)
+                local ArrowIcon = CreateIcon("chevron-down", 12, DropdownArrow, Colors.TextDim)
+                ArrowIcon.Position = UDim2.fromOffset(8, 8)
+                ArrowIcon.Name = "ArrowIcon"
 
                 local Selected = default
                 local Opened = false
+                local Overlay = nil
+                local ItemsFrame = nil
 
                 local function UpdateDropdown()
                     if Selected then
-                        DropdownLabel.Text = dropName .. ": " .. tostring(Selected)
+                        DropdownLabel.Text = tostring(Selected)
                         DropdownLabel.TextColor3 = Colors.Text
                     else
-                        DropdownLabel.Text = dropName
+                        DropdownLabel.Text = "Select Option"
                         DropdownLabel.TextColor3 = Colors.TextDim
                     end
                     callback(Selected)
@@ -756,41 +849,131 @@ function Prismarine:CreateWindow(options)
                     end
                 end
 
-                for _, item in ipairs(items) do
-                    local ItemBtn = Instance.new("TextButton")
-                    ItemBtn.Name = tostring(item)
-                    ItemBtn.Size = UDim2.new(1, 0, 0, 24)
-                    ItemBtn.BackgroundTransparency = 1
-                    ItemBtn.Text = tostring(item)
-                    ItemBtn.TextColor3 = Colors.TextDim
-                    ItemBtn.TextSize = 11
-                    ItemBtn.Font = Enum.Font.Gotham
-                    ItemBtn.Parent = ItemsFrame
+                local function CloseDropdown()
+                    if not Opened then return end
+                    Opened = false
+                    ArrowIcon.Rotation = 0
+                    if Overlay then
+                        Overlay:Destroy()
+                        Overlay = nil
+                    end
+                    if ItemsFrame then
+                        ItemsFrame:Destroy()
+                        ItemsFrame = nil
+                    end
+                end
 
-                    ItemBtn.MouseEnter:Connect(function()
-                        ItemBtn.BackgroundColor3 = Colors.Surface
-                        ItemBtn.BackgroundTransparency = 0.5
-                        ItemBtn.TextColor3 = Colors.Text
-                    end)
-                    ItemBtn.MouseLeave:Connect(function()
+                local function OpenDropdown()
+                    if Opened then
+                        CloseDropdown()
+                        return
+                    end
+                    Opened = true
+                    ArrowIcon.Rotation = 180
+
+                    local mainAbsPos = MainFrame.AbsolutePosition
+                    local mainAbsSize = MainFrame.AbsoluteSize
+                    local dropdownAbsPos = DropdownArrow.AbsolutePosition
+                    local dropdownAbsSize = DropdownArrow.AbsoluteSize
+
+                    Overlay = Instance.new("TextButton")
+                    Overlay.Name = "Overlay"
+                    Overlay.Size = UDim2.new(1, 0, 1, 0)
+                    Overlay.BackgroundColor3 = Colors.Black
+                    Overlay.BackgroundTransparency = 0.5
+                    Overlay.BorderSizePixel = 0
+                    Overlay.Text = ""
+                    Overlay.ZIndex = 50
+                    Overlay.Parent = ScreenGui
+
+                    ItemsFrame = Instance.new("Frame")
+                    ItemsFrame.Name = "Items"
+                    ItemsFrame.Size = UDim2.fromOffset(180, 0)
+                    ItemsFrame.Position = UDim2.fromOffset(
+                        dropdownAbsPos.X + dropdownAbsSize.X - 180,
+                        mainAbsPos.Y + 40
+                    )
+                    ItemsFrame.BackgroundColor3 = Colors.Surface
+                    ItemsFrame.BackgroundTransparency = 0.05
+                    ItemsFrame.BorderSizePixel = 0
+                    ItemsFrame.ZIndex = 51
+                    ItemsFrame.Parent = ScreenGui
+                    ItemsFrame.AutomaticSize = Enum.AutomaticSize.Y
+                    RoundCorners(ItemsFrame, 10)
+                    Stroke(ItemsFrame, Colors.Border, 1)
+
+                    local maxHeight = mainAbsSize.Y - 50
+                    local totalItemsHeight = #items * 28 + 8
+                    if totalItemsHeight > maxHeight then
+                        ItemsFrame.Size = UDim2.fromOffset(180, maxHeight)
+                    end
+
+                    local ItemsScroll = Instance.new("ScrollingFrame")
+                    ItemsScroll.Name = "Scroll"
+                    ItemsScroll.Size = UDim2.new(1, 0, 1, 0)
+                    ItemsScroll.BackgroundTransparency = 1
+                    ItemsScroll.BorderSizePixel = 0
+                    ItemsScroll.ScrollBarThickness = 2
+                    ItemsScroll.ScrollBarImageColor3 = Colors.Primary
+                    ItemsScroll.CanvasSize = UDim2.new(0, 0, 0, totalItemsHeight)
+                    ItemsScroll.ZIndex = 52
+                    ItemsScroll.Parent = ItemsFrame
+
+                    local ItemsLayout = Instance.new("UIListLayout")
+                    ItemsLayout.Padding = UDim.new(0, 1)
+                    ItemsLayout.SortOrder = Enum.SortOrder.LayoutOrder
+                    ItemsLayout.Parent = ItemsScroll
+
+                    Padding(ItemsScroll, 4, 4, 4, 4)
+
+                    for _, item in ipairs(items) do
+                        local ItemBtn = Instance.new("TextButton")
+                        ItemBtn.Name = tostring(item)
+                        ItemBtn.Size = UDim2.new(1, 0, 0, 28)
                         ItemBtn.BackgroundTransparency = 1
+                        ItemBtn.Text = tostring(item)
                         ItemBtn.TextColor3 = Colors.TextDim
-                    end)
-                    ItemBtn.MouseButton1Click:Connect(function()
-                        Selected = item
-                        UpdateDropdown()
-                        Opened = false
-                        ItemsFrame.Visible = false
-                        DropdownArrow.Rotation = 0
+                        ItemBtn.TextSize = 11
+                        ItemBtn.Font = Enum.Font.Gotham
+                        ItemBtn.ZIndex = 53
+                        ItemBtn.Parent = ItemsScroll
+                        RoundCorners(ItemBtn, 4)
+
+                        if item == Selected then
+                            ItemBtn.BackgroundColor3 = Colors.Primary
+                            ItemBtn.BackgroundTransparency = 0.85
+                            ItemBtn.TextColor3 = Colors.Primary
+                        end
+
+                        ItemBtn.MouseEnter:Connect(function()
+                            if item ~= Selected then
+                                ItemBtn.BackgroundColor3 = Colors.SurfaceLight
+                                ItemBtn.BackgroundTransparency = 0.3
+                                ItemBtn.TextColor3 = Colors.Text
+                            end
+                        end)
+                        ItemBtn.MouseLeave:Connect(function()
+                            if item ~= Selected then
+                                ItemBtn.BackgroundTransparency = 1
+                                ItemBtn.TextColor3 = Colors.TextDim
+                            end
+                        end)
+                        ItemBtn.MouseButton1Click:Connect(function()
+                            Selected = item
+                            UpdateDropdown()
+                            CloseDropdown()
+                        end)
+                    end
+
+                    Overlay.MouseButton1Click:Connect(function()
+                        CloseDropdown()
                     end)
                 end
 
                 UpdateDropdown()
 
-                DropdownButton.MouseButton1Click:Connect(function()
-                    Opened = not Opened
-                    ItemsFrame.Visible = Opened
-                    DropdownArrow.Rotation = Opened and 180 or 0
+                DropdownArrow.MouseButton1Click:Connect(function()
+                    OpenDropdown()
                 end)
 
                 return {Set = function(v) Selected = v; UpdateDropdown() end, Get = function() return Selected end}
@@ -834,7 +1017,7 @@ function Prismarine:CreateWindow(options)
                 ValueLabel.Position = UDim2.new(1, -50, 0, 0)
                 ValueLabel.BackgroundTransparency = 1
                 ValueLabel.Text = tostring(default) .. suffix
-                ValueLabel.TextColor3 = Colors.Primary
+                            ValueLabel.TextColor3 = Colors.Primary
                 ValueLabel.TextSize = 11
                 ValueLabel.Font = Enum.Font.GothamBold
                 ValueLabel.TextXAlignment = Enum.TextXAlignment.Right
