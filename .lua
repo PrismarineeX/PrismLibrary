@@ -246,7 +246,7 @@ function Prismarine:CreateWindow(options)
         ConfirmFrame.BackgroundTransparency = 0.6
         ConfirmFrame.BorderSizePixel = 0
         ConfirmFrame.ZIndex = 100
-        ConfirmFrame.Parent = ScreenGui
+        ConfirmFrame.Parent = MainFrame
 
         local ConfirmBox = Instance.new("Frame")
         ConfirmBox.Name = "ConfirmBox"
@@ -876,6 +876,11 @@ function Prismarine:CreateWindow(options)
                     local dropdownAbsPos = DropdownArrow.AbsolutePosition
                     local dropdownAbsSize = DropdownArrow.AbsoluteSize
 
+                    local listWidth = 160
+                    local listX = dropdownAbsPos.X + dropdownAbsSize.X - listWidth
+                    local listY = mainAbsPos.Y + 40
+                    local listHeight = mainAbsSize.Y - 50
+
                     Overlay = Instance.new("TextButton")
                     Overlay.Name = "Overlay"
                     Overlay.Size = UDim2.new(1, 0, 1, 0)
@@ -884,29 +889,19 @@ function Prismarine:CreateWindow(options)
                     Overlay.BorderSizePixel = 0
                     Overlay.Text = ""
                     Overlay.ZIndex = 50
-                    Overlay.Parent = ScreenGui
+                    Overlay.Parent = MainFrame
 
                     ItemsFrame = Instance.new("Frame")
                     ItemsFrame.Name = "Items"
-                    ItemsFrame.Size = UDim2.fromOffset(180, 0)
-                    ItemsFrame.Position = UDim2.fromOffset(
-                        dropdownAbsPos.X + dropdownAbsSize.X - 180,
-                        mainAbsPos.Y + 40
-                    )
+                    ItemsFrame.Size = UDim2.fromOffset(listWidth, listHeight)
+                    ItemsFrame.Position = UDim2.fromOffset(listX, listY)
                     ItemsFrame.BackgroundColor3 = Colors.Surface
                     ItemsFrame.BackgroundTransparency = 0.05
                     ItemsFrame.BorderSizePixel = 0
                     ItemsFrame.ZIndex = 51
-                    ItemsFrame.Parent = ScreenGui
-                    ItemsFrame.AutomaticSize = Enum.AutomaticSize.Y
+                    ItemsFrame.Parent = MainFrame
                     RoundCorners(ItemsFrame, 10)
                     Stroke(ItemsFrame, Colors.Border, 1)
-
-                    local maxHeight = mainAbsSize.Y - 50
-                    local totalItemsHeight = #items * 28 + 8
-                    if totalItemsHeight > maxHeight then
-                        ItemsFrame.Size = UDim2.fromOffset(180, maxHeight)
-                    end
 
                     local ItemsScroll = Instance.new("ScrollingFrame")
                     ItemsScroll.Name = "Scroll"
@@ -915,7 +910,7 @@ function Prismarine:CreateWindow(options)
                     ItemsScroll.BorderSizePixel = 0
                     ItemsScroll.ScrollBarThickness = 2
                     ItemsScroll.ScrollBarImageColor3 = Colors.Primary
-                    ItemsScroll.CanvasSize = UDim2.new(0, 0, 0, totalItemsHeight)
+                    ItemsScroll.CanvasSize = UDim2.new(0, 0, 0, #items * 29 + 8)
                     ItemsScroll.ZIndex = 52
                     ItemsScroll.Parent = ItemsFrame
 
@@ -1017,11 +1012,11 @@ function Prismarine:CreateWindow(options)
                 ValueLabel.Position = UDim2.new(1, -50, 0, 0)
                 ValueLabel.BackgroundTransparency = 1
                 ValueLabel.Text = tostring(default) .. suffix
-                            ValueLabel.TextColor3 = Colors.Primary
+                ValueLabel.TextColor3 = Colors.Primary
                 ValueLabel.TextSize = 11
                 ValueLabel.Font = Enum.Font.GothamBold
                 ValueLabel.TextXAlignment = Enum.TextXAlignment.Right
-                ValueLabel.Parent = SliderFrame
+   ValueLabel.Parent = SliderFrame
 
                 local Track = Instance.new("Frame")
                 Track.Name = "Track"
