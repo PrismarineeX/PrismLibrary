@@ -1,4 +1,3 @@
-
 local Prismarine = {}
 
 local Players = game:GetService("Players")
@@ -814,26 +813,26 @@ function Prismarine:CreateWindow(options)
                 DropdownLabel.TextXAlignment = Enum.TextXAlignment.Left
                 DropdownLabel.Parent = DisplayFrame
 
-                local DropdownArrow = Instance.new("TextButton")
-                DropdownArrow.Name = "Arrow"
-                DropdownArrow.Size = UDim2.fromOffset(28, 28)
-                DropdownArrow.Position = UDim2.new(1, -28, 0, 0)
-                DropdownArrow.BackgroundColor3 = Colors.SurfaceLight
-                DropdownArrow.BackgroundTransparency = 0.3
-                DropdownArrow.BorderSizePixel = 0
-                DropdownArrow.Text = ""
-                DropdownArrow.Parent = DropdownFrame
-                RoundCorners(DropdownArrow, 6)
-                Stroke(DropdownArrow, Colors.Border, 1)
+                local DropdownOpenBtn = Instance.new("TextButton")
+                DropdownOpenBtn.Name = "OpenBtn"
+                DropdownOpenBtn.Size = UDim2.fromOffset(28, 28)
+                DropdownOpenBtn.Position = UDim2.new(1, -28, 0, 0)
+                DropdownOpenBtn.BackgroundColor3 = Colors.SurfaceLight
+                DropdownOpenBtn.BackgroundTransparency = 0.3
+                DropdownOpenBtn.BorderSizePixel = 0
+                DropdownOpenBtn.Text = ""
+                DropdownOpenBtn.Parent = DropdownFrame
+                RoundCorners(DropdownOpenBtn, 6)
+                Stroke(DropdownOpenBtn, Colors.Border, 1)
 
-                local ArrowIcon = CreateIcon("chevron-down", 12, DropdownArrow, Colors.TextDim)
-                ArrowIcon.Position = UDim2.fromOffset(8, 8)
-                ArrowIcon.Name = "ArrowIcon"
+                local OpenIcon = CreateIcon("chevron-down", 12, DropdownOpenBtn, Colors.TextDim)
+                OpenIcon.Position = UDim2.fromOffset(8, 8)
+                OpenIcon.Name = "OpenIcon"
 
                 local Selected = default
                 local Opened = false
+                local ListFrame = nil
                 local Overlay = nil
-                local ItemsFrame = nil
 
                 local function UpdateDropdown()
                     if Selected then
@@ -852,14 +851,14 @@ function Prismarine:CreateWindow(options)
                 local function CloseDropdown()
                     if not Opened then return end
                     Opened = false
-                    ArrowIcon.Rotation = 0
+                    OpenIcon.Rotation = 0
+                    if ListFrame then
+                        ListFrame:Destroy()
+                        ListFrame = nil
+                    end
                     if Overlay then
                         Overlay:Destroy()
                         Overlay = nil
-                    end
-                    if ItemsFrame then
-                        ItemsFrame:Destroy()
-                        ItemsFrame = nil
                     end
                 end
 
@@ -869,15 +868,13 @@ function Prismarine:CreateWindow(options)
                         return
                     end
                     Opened = true
-                    ArrowIcon.Rotation = 180
+                    OpenIcon.Rotation = 180
 
                     local mainAbsPos = MainFrame.AbsolutePosition
                     local mainAbsSize = MainFrame.AbsoluteSize
-                    local dropdownAbsPos = DropdownArrow.AbsolutePosition
-                    local dropdownAbsSize = DropdownArrow.AbsoluteSize
 
                     local listWidth = 160
-                    local listX = dropdownAbsPos.X + dropdownAbsSize.X - listWidth
+                    local listX = mainAbsPos.X + mainAbsSize.X - listWidth - 8
                     local listY = mainAbsPos.Y + 40
                     local listHeight = mainAbsSize.Y - 50
 
@@ -891,35 +888,35 @@ function Prismarine:CreateWindow(options)
                     Overlay.ZIndex = 50
                     Overlay.Parent = MainFrame
 
-                    ItemsFrame = Instance.new("Frame")
-                    ItemsFrame.Name = "Items"
-                    ItemsFrame.Size = UDim2.fromOffset(listWidth, listHeight)
-                    ItemsFrame.Position = UDim2.fromOffset(listX, listY)
-                    ItemsFrame.BackgroundColor3 = Colors.Surface
-                    ItemsFrame.BackgroundTransparency = 0.05
-                    ItemsFrame.BorderSizePixel = 0
-                    ItemsFrame.ZIndex = 51
-                    ItemsFrame.Parent = MainFrame
-                    RoundCorners(ItemsFrame, 10)
-                    Stroke(ItemsFrame, Colors.Border, 1)
+                    ListFrame = Instance.new("Frame")
+                    ListFrame.Name = "ListFrame"
+                    ListFrame.Size = UDim2.fromOffset(listWidth, listHeight)
+                    ListFrame.Position = UDim2.fromOffset(listX, listY)
+                    ListFrame.BackgroundColor3 = Colors.Surface
+                    ListFrame.BackgroundTransparency = 0.05
+                    ListFrame.BorderSizePixel = 0
+                    ListFrame.ZIndex = 51
+                    ListFrame.Parent = MainFrame
+                    RoundCorners(ListFrame, 10)
+                    Stroke(ListFrame, Colors.Border, 1)
 
-                    local ItemsScroll = Instance.new("ScrollingFrame")
-                    ItemsScroll.Name = "Scroll"
-                    ItemsScroll.Size = UDim2.new(1, 0, 1, 0)
-                    ItemsScroll.BackgroundTransparency = 1
-                    ItemsScroll.BorderSizePixel = 0
-                    ItemsScroll.ScrollBarThickness = 2
-                    ItemsScroll.ScrollBarImageColor3 = Colors.Primary
-                    ItemsScroll.CanvasSize = UDim2.new(0, 0, 0, #items * 29 + 8)
-                    ItemsScroll.ZIndex = 52
-                    ItemsScroll.Parent = ItemsFrame
+                    local ListScroll = Instance.new("ScrollingFrame")
+                    ListScroll.Name = "Scroll"
+                    ListScroll.Size = UDim2.new(1, 0, 1, 0)
+                    ListScroll.BackgroundTransparency = 1
+                    ListScroll.BorderSizePixel = 0
+                    ListScroll.ScrollBarThickness = 2
+                    ListScroll.ScrollBarImageColor3 = Colors.Primary
+                    ListScroll.CanvasSize = UDim2.new(0, 0, 0, #items * 29 + 8)
+                    ListScroll.ZIndex = 52
+                    ListScroll.Parent = ListFrame
 
-                    local ItemsLayout = Instance.new("UIListLayout")
-                    ItemsLayout.Padding = UDim.new(0, 1)
-                    ItemsLayout.SortOrder = Enum.SortOrder.LayoutOrder
-                    ItemsLayout.Parent = ItemsScroll
+                    local ListLayout = Instance.new("UIListLayout")
+                    ListLayout.Padding = UDim.new(0, 1)
+                    ListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+                    ListLayout.Parent = ListScroll
 
-                    Padding(ItemsScroll, 4, 4, 4, 4)
+                    Padding(ListScroll, 4, 4, 4, 4)
 
                     for _, item in ipairs(items) do
                         local ItemBtn = Instance.new("TextButton")
@@ -931,7 +928,7 @@ function Prismarine:CreateWindow(options)
                         ItemBtn.TextSize = 11
                         ItemBtn.Font = Enum.Font.Gotham
                         ItemBtn.ZIndex = 53
-                        ItemBtn.Parent = ItemsScroll
+                        ItemBtn.Parent = ListScroll
                         RoundCorners(ItemBtn, 4)
 
                         if item == Selected then
@@ -967,11 +964,289 @@ function Prismarine:CreateWindow(options)
 
                 UpdateDropdown()
 
-                DropdownArrow.MouseButton1Click:Connect(function()
+                DropdownOpenBtn.MouseButton1Click:Connect(function()
                     OpenDropdown()
                 end)
 
                 return {Set = function(v) Selected = v; UpdateDropdown() end, Get = function() return Selected end}
+            end
+
+            function SectionAPI:AddMultiDropdown(options)
+                options = options or {}
+                local dropName = options.Name or "Multi Dropdown"
+                local items = options.Items or {}
+                local default = options.Default or {}
+                local callback = options.Callback or function() end
+                local flag = options.Flag
+
+                if flag then
+                    local saved = GetConfigValue(flag, nil)
+                    if saved and type(saved) == "table" then
+                        default = saved
+                    end
+                end
+
+                local DropdownFrame = Instance.new("Frame")
+                DropdownFrame.Name = dropName
+                DropdownFrame.Size = UDim2.new(1, 0, 0, 28)
+                DropdownFrame.BackgroundTransparency = 1
+                DropdownFrame.Parent = SectionContent
+                DropdownFrame.ClipsDescendants = true
+                DropdownFrame.AutomaticSize = Enum.AutomaticSize.Y
+
+                local DisplayFrame = Instance.new("Frame")
+                DisplayFrame.Name = "Display"
+                DisplayFrame.Size = UDim2.new(1, -32, 0, 28)
+                DisplayFrame.BackgroundColor3 = Colors.SurfaceLight
+                DisplayFrame.BackgroundTransparency = 0.3
+                DisplayFrame.BorderSizePixel = 0
+                DisplayFrame.Parent = DropdownFrame
+                RoundCorners(DisplayFrame, 6)
+                Stroke(DisplayFrame, Colors.Border, 1)
+
+                local DropdownLabel = Instance.new("TextLabel")
+                DropdownLabel.Name = "Label"
+                DropdownLabel.Size = UDim2.new(1, -10, 1, 0)
+                DropdownLabel.Position = UDim2.fromOffset(10, 0)
+                DropdownLabel.BackgroundTransparency = 1
+                DropdownLabel.Text = "Select Options"
+                DropdownLabel.TextColor3 = Colors.TextDim
+                DropdownLabel.TextSize = 11
+                DropdownLabel.Font = Enum.Font.Gotham
+                DropdownLabel.TextXAlignment = Enum.TextXAlignment.Left
+                DropdownLabel.Parent = DisplayFrame
+
+                local DropdownOpenBtn = Instance.new("TextButton")
+                DropdownOpenBtn.Name = "OpenBtn"
+                DropdownOpenBtn.Size = UDim2.fromOffset(28, 28)
+                DropdownOpenBtn.Position = UDim2.new(1, -28, 0, 0)
+                DropdownOpenBtn.BackgroundColor3 = Colors.SurfaceLight
+                DropdownOpenBtn.BackgroundTransparency = 0.3
+                DropdownOpenBtn.BorderSizePixel = 0
+                DropdownOpenBtn.Text = ""
+                DropdownOpenBtn.Parent = DropdownFrame
+                RoundCorners(DropdownOpenBtn, 6)
+                Stroke(DropdownOpenBtn, Colors.Border, 1)
+
+                local OpenIcon = CreateIcon("chevron-down", 12, DropdownOpenBtn, Colors.TextDim)
+                OpenIcon.Position = UDim2.fromOffset(8, 8)
+                OpenIcon.Name = "OpenIcon"
+
+                local Selected = {}
+                for _, v in ipairs(default) do
+                    table.insert(Selected, v)
+                end
+                local Opened = false
+                local ListFrame = nil
+                local Overlay = nil
+
+                local function UpdateDisplay()
+                    if #Selected > 0 then
+                        local displayText = table.concat(Selected, ", ")
+                        if #displayText > 20 then
+                            displayText = string.sub(displayText, 1, 20) .. "..."
+                        end
+                        DropdownLabel.Text = displayText
+                        DropdownLabel.TextColor3 = Colors.Text
+                    else
+                        DropdownLabel.Text = "Select Options"
+                        DropdownLabel.TextColor3 = Colors.TextDim
+                    end
+                end
+
+                local function UpdateMultiDropdown()
+                    UpdateDisplay()
+                    callback(Selected)
+                    if flag then
+                        SetConfigValue(flag, Selected)
+                    end
+                end
+
+                local function CloseDropdown()
+                    if not Opened then return end
+                    Opened = false
+                    OpenIcon.Rotation = 0
+                    if ListFrame then
+                        ListFrame:Destroy()
+                        ListFrame = nil
+                    end
+                    if Overlay then
+                        Overlay:Destroy()
+                        Overlay = nil
+                    end
+                end
+
+                local function IsSelected(item)
+                    for _, v in ipairs(Selected) do
+                        if v == item then return true end
+                    end
+                    return false
+                end
+
+                local function ToggleItem(item)
+                    local found = false
+                    for i, v in ipairs(Selected) do
+                        if v == item then
+                            table.remove(Selected, i)
+                            found = true
+                            break
+                        end
+                    end
+                    if not found then
+                        table.insert(Selected, item)
+                    end
+                    UpdateMultiDropdown()
+                end
+
+                local function OpenDropdown()
+                    if Opened then
+                        CloseDropdown()
+                        return
+                    end
+                    Opened = true
+                    OpenIcon.Rotation = 180
+
+                    local mainAbsPos = MainFrame.AbsolutePosition
+                    local mainAbsSize = MainFrame.AbsoluteSize
+
+                    local listWidth = 160
+                    local listX = mainAbsPos.X + mainAbsSize.X - listWidth - 8
+                    local listY = mainAbsPos.Y + 40
+                    local listHeight = mainAbsSize.Y - 50
+
+                    Overlay = Instance.new("TextButton")
+                    Overlay.Name = "Overlay"
+                    Overlay.Size = UDim2.new(1, 0, 1, 0)
+                    Overlay.BackgroundColor3 = Colors.Black
+                    Overlay.BackgroundTransparency = 0.5
+                    Overlay.BorderSizePixel = 0
+                    Overlay.Text = ""
+                    Overlay.ZIndex = 50
+                    Overlay.Parent = MainFrame
+
+                    ListFrame = Instance.new("Frame")
+                    ListFrame.Name = "ListFrame"
+                    ListFrame.Size = UDim2.fromOffset(listWidth, listHeight)
+                    ListFrame.Position = UDim2.fromOffset(listX, listY)
+                    ListFrame.BackgroundColor3 = Colors.Surface
+                    ListFrame.BackgroundTransparency = 0.05
+                    ListFrame.BorderSizePixel = 0
+                    ListFrame.ZIndex = 51
+                    ListFrame.Parent = MainFrame
+                    RoundCorners(ListFrame, 10)
+                    Stroke(ListFrame, Colors.Border, 1)
+
+                    local ListScroll = Instance.new("ScrollingFrame")
+                    ListScroll.Name = "Scroll"
+                    ListScroll.Size = UDim2.new(1, 0, 1, 0)
+                    ListScroll.BackgroundTransparency = 1
+                    ListScroll.BorderSizePixel = 0
+                    ListScroll.ScrollBarThickness = 2
+                    ListScroll.ScrollBarImageColor3 = Colors.Primary
+                    ListScroll.CanvasSize = UDim2.new(0, 0, 0, #items * 29 + 8)
+                    ListScroll.ZIndex = 52
+                    ListScroll.Parent = ListFrame
+
+                    local ListLayout = Instance.new("UIListLayout")
+                    ListLayout.Padding = UDim.new(0, 1)
+                    ListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+                    ListLayout.Parent = ListScroll
+
+                    Padding(ListScroll, 4, 4, 4, 4)
+
+                    for _, item in ipairs(items) do
+                        local ItemBtn = Instance.new("TextButton")
+                        ItemBtn.Name = tostring(item)
+                        ItemBtn.Size = UDim2.new(1, 0, 0, 28)
+                        ItemBtn.BackgroundTransparency = 1
+                        ItemBtn.Text = ""
+                        ItemBtn.ZIndex = 53
+                        ItemBtn.Parent = ListScroll
+                        RoundCorners(ItemBtn, 4)
+
+                        local ItemLabel = Instance.new("TextLabel")
+                        ItemLabel.Name = "Label"
+                        ItemLabel.Size = UDim2.new(1, -30, 1, 0)
+                        ItemLabel.Position = UDim2.fromOffset(8, 0)
+                        ItemLabel.BackgroundTransparency = 1
+                        ItemLabel.Text = tostring(item)
+                        ItemLabel.TextColor3 = Colors.TextDim
+                        ItemLabel.TextSize = 11
+                        ItemLabel.Font = Enum.Font.Gotham
+                        ItemLabel.TextXAlignment = Enum.TextXAlignment.Left
+                        ItemLabel.ZIndex = 54
+                        ItemLabel.Parent = ItemBtn
+
+                        local CheckBox = Instance.new("Frame")
+                        CheckBox.Name = "CheckBox"
+                        CheckBox.Size = UDim2.fromOffset(16, 16)
+                        CheckBox.Position = UDim2.new(1, -22, 0.5, -8)
+                        CheckBox.BackgroundColor3 = Colors.SurfaceLight
+                        CheckBox.BorderSizePixel = 0
+                        CheckBox.ZIndex = 54
+                        CheckBox.Parent = ItemBtn
+                        RoundCorners(CheckBox, 4)
+                        Stroke(CheckBox, Colors.Border, 1)
+
+                        if IsSelected(item) then
+                            ItemBtn.BackgroundColor3 = Colors.Primary
+                            ItemBtn.BackgroundTransparency = 0.85
+                            ItemLabel.TextColor3 = Colors.Primary
+                            CheckBox.BackgroundColor3 = Colors.Primary
+                            CheckBox.BackgroundTransparency = 0.3
+                            local check = CreateIcon("check", 10, CheckBox, Colors.White)
+                            check.Position = UDim2.fromOffset(3, 3)
+                            check.Name = "CheckMark"
+                            check.ZIndex = 55
+                        end
+
+                        ItemBtn.MouseEnter:Connect(function()
+                            if not IsSelected(item) then
+                                ItemBtn.BackgroundColor3 = Colors.SurfaceLight
+                                ItemBtn.BackgroundTransparency = 0.3
+                                ItemLabel.TextColor3 = Colors.Text
+                            end
+                        end)
+                        ItemBtn.MouseLeave:Connect(function()
+                            if not IsSelected(item) then
+                                ItemBtn.BackgroundTransparency = 1
+                                ItemLabel.TextColor3 = Colors.TextDim
+                            end
+                        end)
+                        ItemBtn.MouseButton1Click:Connect(function()
+                            ToggleItem(item)
+                            CloseDropdown()
+                            OpenDropdown()
+                        end)
+                    end
+
+                    Overlay.MouseButton1Click:Connect(function()
+                        CloseDropdown()
+                    end)
+                end
+
+                UpdateDisplay()
+
+                DropdownOpenBtn.MouseButton1Click:Connect(function()
+                    OpenDropdown()
+                end)
+
+                return {
+                    Set = function(v)
+                        Selected = {}
+                        for _, item in ipairs(v) do
+                            table.insert(Selected, item)
+                        end
+                        UpdateMultiDropdown()
+                    end,
+                    Get = function() return Selected end,
+                    Add = function(item) if not IsSelected(item) then table.insert(Selected, item); UpdateMultiDropdown() end end,
+                    Remove = function(item)
+                        for i, v in ipairs(Selected) do
+                            if v == item then table.remove(Selected, i); UpdateMultiDropdown(); break end
+                        end
+                    end
+                }
             end
 
             function SectionAPI:AddSlider(options)
@@ -1016,7 +1291,7 @@ function Prismarine:CreateWindow(options)
                 ValueLabel.TextSize = 11
                 ValueLabel.Font = Enum.Font.GothamBold
                 ValueLabel.TextXAlignment = Enum.TextXAlignment.Right
-   ValueLabel.Parent = SliderFrame
+                ValueLabel.Parent = SliderFrame
 
                 local Track = Instance.new("Frame")
                 Track.Name = "Track"
@@ -1192,7 +1467,7 @@ function Prismarine:CreateWindow(options)
 
                 TextBox.FocusLost:Connect(function()
                     if numeric then
-                        local num = tonumber(TextBox.Text)
+                                     local num = tonumber(TextBox.Text)
                         if num then
                             TextBox.Text = tostring(num)
                             callback(num)
