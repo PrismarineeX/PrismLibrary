@@ -28,10 +28,15 @@ local Colors = {
     Warning = Color3.fromRGB(234, 179, 8),
 }
 
-local function GetIcon(name, size)
+local function SafeGetIcon(name, size)
     size = size or 16
+    if not IconsModule or not IconsModule.Icons then
+        return nil
+    end
     local iconData = IconsModule.Icons[name]
-    if not iconData then return nil end
+    if not iconData then
+        return nil
+    end
 
     local imageLabel = Instance.new("ImageLabel")
     imageLabel.BackgroundTransparency = 1
@@ -45,10 +50,16 @@ local function GetIcon(name, size)
 end
 
 local function CreateIcon(name, size, parent, color)
-    local icon = GetIcon(name, size)
-    if not icon then return nil end
-    if color then icon.ImageColor3 = color end
-    if parent then icon.Parent = parent end
+    local icon = SafeGetIcon(name, size)
+    if not icon then
+        return nil
+    end
+    if color then
+        icon.ImageColor3 = color
+    end
+    if parent then
+        icon.Parent = parent
+    end
     return icon
 end
 
@@ -184,8 +195,10 @@ function Prismarine:CreateWindow(options)
     RoundCorners(TopBar, 14)
 
     local TopBarIcon = CreateIcon(icon, 18, TopBar, Colors.Primary)
-    TopBarIcon.Position = UDim2.fromOffset(12, 9)
-    TopBarIcon.Name = "TopBarIcon"
+    if TopBarIcon then
+        TopBarIcon.Position = UDim2.fromOffset(12, 9)
+        TopBarIcon.Name = "TopBarIcon"
+    end
 
     local TitleLabel = Instance.new("TextLabel")
     TitleLabel.Name = "Title"
@@ -215,21 +228,22 @@ function Prismarine:CreateWindow(options)
         btn.Parent = ButtonContainer
 
         local iconImg = CreateIcon(iconName, 14, btn, color)
-        iconImg.Position = UDim2.fromOffset(4, 4)
-        iconImg.Name = name .. "Icon"
+        if iconImg then
+            iconImg.Position = UDim2.fromOffset(4, 4)
+            iconImg.Name = name .. "Icon"
 
-        btn.MouseEnter:Connect(function()
-            iconImg.ImageColor3 = Colors.White
-        end)
-        btn.MouseLeave:Connect(function()
-            iconImg.ImageColor3 = color
-        end)
+            btn.MouseEnter:Connect(function()
+                iconImg.ImageColor3 = Colors.White
+            end)
+            btn.MouseLeave:Connect(function()
+                iconImg.ImageColor3 = color
+            end)
+        end
         btn.MouseButton1Click:Connect(callback)
         return btn
     end
 
     local Minimized = false
-    local OriginalSize = size
 
     local MinimizeBtn = CreateTopButton("Minimize", "minus", Colors.TextDim, function()
         Minimized = not Minimized
@@ -386,12 +400,16 @@ function Prismarine:CreateWindow(options)
         end
         for name, tab in pairs(Tabs) do
             if name == tabName then
-                tab.BackgroundColor3 = Colors.SurfaceLight
-                tab.Icon.ImageColor3 = Colors.Primary
+                tab.Button.BackgroundColor3 = Colors.SurfaceLight
+                if tab.Icon then
+                    tab.Icon.ImageColor3 = Colors.Primary
+                end
                 tab.Label.TextColor3 = Colors.Primary
             else
-                tab.BackgroundColor3 = Colors.Background
-                tab.Icon.ImageColor3 = Colors.TextDim
+                tab.Button.BackgroundColor3 = Colors.Background
+                if tab.Icon then
+                    tab.Icon.ImageColor3 = Colors.TextDim
+                end
                 tab.Label.TextColor3 = Colors.TextDim
             end
         end
@@ -420,8 +438,10 @@ function Prismarine:CreateWindow(options)
         RoundCorners(TabButton, 8)
 
         local tabIconImg = CreateIcon(tabIcon, 16, TabButton, Colors.TextDim)
-        tabIconImg.Position = UDim2.fromOffset(10, 8)
-        tabIconImg.Name = "Icon"
+        if tabIconImg then
+            tabIconImg.Position = UDim2.fromOffset(10, 8)
+            tabIconImg.Name = "Icon"
+        end
 
         local tabLabel = Instance.new("TextLabel")
         tabLabel.Name = "Label"
@@ -494,8 +514,10 @@ function Prismarine:CreateWindow(options)
             SectionHeader.Parent = Section
 
             local HeaderIcon = CreateIcon("chevron-right", 14, SectionHeader, Colors.TextDim)
-            HeaderIcon.Position = UDim2.fromOffset(10, 9)
-            HeaderIcon.Name = "CollapseIcon"
+            if HeaderIcon then
+                HeaderIcon.Position = UDim2.fromOffset(10, 9)
+                HeaderIcon.Name = "CollapseIcon"
+            end
 
             local HeaderTitle = Instance.new("TextLabel")
             HeaderTitle.Name = "Title"
@@ -530,10 +552,14 @@ function Prismarine:CreateWindow(options)
             local function UpdateCollapse()
                 if IsCollapsed then
                     SectionContent.Visible = false
-                    HeaderIcon.Rotation = 0
+                    if HeaderIcon then
+                        HeaderIcon.Rotation = 0
+                    end
                 else
                     SectionContent.Visible = true
-                    HeaderIcon.Rotation = 90
+                    if HeaderIcon then
+                        HeaderIcon.Rotation = 90
+                    end
                 end
             end
 
@@ -560,7 +586,7 @@ function Prismarine:CreateWindow(options)
                 ParagraphFrame.Parent = SectionContent
 
                 local ParagraphLabel = Instance.new("TextLabel")
-                ParagraphLabel.Name = "Text"
+                                ParagraphLabel.Name = "Text"
                 ParagraphLabel.Size = UDim2.new(1, 0, 0, 0)
                 ParagraphLabel.BackgroundTransparency = 1
                 ParagraphLabel.Text = text
@@ -826,8 +852,10 @@ function Prismarine:CreateWindow(options)
                 Stroke(DropdownOpenBtn, Colors.Border, 1)
 
                 local OpenIcon = CreateIcon("chevron-down", 12, DropdownOpenBtn, Colors.TextDim)
-                OpenIcon.Position = UDim2.fromOffset(8, 8)
-                OpenIcon.Name = "OpenIcon"
+                if OpenIcon then
+                    OpenIcon.Position = UDim2.fromOffset(8, 8)
+                    OpenIcon.Name = "OpenIcon"
+                end
 
                 local Selected = default
                 local Opened = false
@@ -851,7 +879,9 @@ function Prismarine:CreateWindow(options)
                 local function CloseDropdown()
                     if not Opened then return end
                     Opened = false
-                    OpenIcon.Rotation = 0
+                    if OpenIcon then
+                        OpenIcon.Rotation = 0
+                    end
                     if ListFrame then
                         ListFrame:Destroy()
                         ListFrame = nil
@@ -867,16 +897,23 @@ function Prismarine:CreateWindow(options)
                         CloseDropdown()
                         return
                     end
-                    Opened = true
-                    OpenIcon.Rotation = 180
 
                     local mainAbsPos = MainFrame.AbsolutePosition
                     local mainAbsSize = MainFrame.AbsoluteSize
 
+                    if not mainAbsPos or not mainAbsSize then
+                        return
+                    end
+
+                    Opened = true
+                    if OpenIcon then
+                        OpenIcon.Rotation = 180
+                    end
+
                     local listWidth = 160
                     local listX = mainAbsPos.X + mainAbsSize.X - listWidth - 8
                     local listY = mainAbsPos.Y + 40
-                    local listHeight = mainAbsSize.Y - 50
+                    local listHeight = math.max(100, mainAbsSize.Y - 50)
 
                     Overlay = Instance.new("TextButton")
                     Overlay.Name = "Overlay"
@@ -998,7 +1035,7 @@ function Prismarine:CreateWindow(options)
                 DisplayFrame.Name = "Display"
                 DisplayFrame.Size = UDim2.new(1, -32, 0, 28)
                 DisplayFrame.BackgroundColor3 = Colors.SurfaceLight
-                DisplayFrame.BackgroundTransparency = 0.3
+                     DisplayFrame.BackgroundTransparency = 0.3
                 DisplayFrame.BorderSizePixel = 0
                 DisplayFrame.Parent = DropdownFrame
                 RoundCorners(DisplayFrame, 6)
@@ -1029,8 +1066,10 @@ function Prismarine:CreateWindow(options)
                 Stroke(DropdownOpenBtn, Colors.Border, 1)
 
                 local OpenIcon = CreateIcon("chevron-down", 12, DropdownOpenBtn, Colors.TextDim)
-                OpenIcon.Position = UDim2.fromOffset(8, 8)
-                OpenIcon.Name = "OpenIcon"
+                if OpenIcon then
+                    OpenIcon.Position = UDim2.fromOffset(8, 8)
+                    OpenIcon.Name = "OpenIcon"
+                end
 
                 local Selected = {}
                 for _, v in ipairs(default) do
@@ -1065,7 +1104,9 @@ function Prismarine:CreateWindow(options)
                 local function CloseDropdown()
                     if not Opened then return end
                     Opened = false
-                    OpenIcon.Rotation = 0
+                    if OpenIcon then
+                        OpenIcon.Rotation = 0
+                    end
                     if ListFrame then
                         ListFrame:Destroy()
                         ListFrame = nil
@@ -1103,16 +1144,23 @@ function Prismarine:CreateWindow(options)
                         CloseDropdown()
                         return
                     end
-                    Opened = true
-                    OpenIcon.Rotation = 180
 
                     local mainAbsPos = MainFrame.AbsolutePosition
                     local mainAbsSize = MainFrame.AbsoluteSize
 
+                    if not mainAbsPos or not mainAbsSize then
+                        return
+                    end
+
+                    Opened = true
+                    if OpenIcon then
+                        OpenIcon.Rotation = 180
+                    end
+
                     local listWidth = 160
                     local listX = mainAbsPos.X + mainAbsSize.X - listWidth - 8
                     local listY = mainAbsPos.Y + 40
-                    local listHeight = mainAbsSize.Y - 50
+                    local listHeight = math.max(100, mainAbsSize.Y - 50)
 
                     Overlay = Instance.new("TextButton")
                     Overlay.Name = "Overlay"
@@ -1195,9 +1243,11 @@ function Prismarine:CreateWindow(options)
                             CheckBox.BackgroundColor3 = Colors.Primary
                             CheckBox.BackgroundTransparency = 0.3
                             local check = CreateIcon("check", 10, CheckBox, Colors.White)
-                            check.Position = UDim2.fromOffset(3, 3)
-                            check.Name = "CheckMark"
-                            check.ZIndex = 55
+                            if check then
+                                check.Position = UDim2.fromOffset(3, 3)
+                                check.Name = "CheckMark"
+                                check.ZIndex = 55
+                            end
                         end
 
                         ItemBtn.MouseEnter:Connect(function()
@@ -1399,10 +1449,12 @@ function Prismarine:CreateWindow(options)
                 BtnLabel.Parent = ButtonFrame
 
                 if btnIcon then
-                    BtnLabel.Position = UDim2.fromOffset(32, 0)
                     local bIcon = CreateIcon(btnIcon, 14, ButtonFrame, Colors.White)
-                    bIcon.Position = UDim2.fromOffset(10, 7)
-                    bIcon.Name = "Icon"
+                    if bIcon then
+                        BtnLabel.Position = UDim2.fromOffset(32, 0)
+                        bIcon.Position = UDim2.fromOffset(10, 7)
+                        bIcon.Name = "Icon"
+                    end
                 end
 
                 ButtonFrame.MouseEnter:Connect(function()
@@ -1467,7 +1519,7 @@ function Prismarine:CreateWindow(options)
 
                 TextBox.FocusLost:Connect(function()
                     if numeric then
-                                     local num = tonumber(TextBox.Text)
+                        local num = tonumber(TextBox.Text)
                         if num then
                             TextBox.Text = tostring(num)
                             callback(num)
@@ -1536,9 +1588,11 @@ function Prismarine:CreateWindow(options)
                 Stroke(CheckBox, Colors.Border, 1)
 
                 local CheckMark = CreateIcon("check", 12, CheckBox, Colors.Primary)
-                CheckMark.Position = UDim2.fromOffset(3, 3)
-                CheckMark.Name = "CheckMark"
-                CheckMark.Visible = default
+                if CheckMark then
+                    CheckMark.Position = UDim2.fromOffset(3, 3)
+                    CheckMark.Name = "CheckMark"
+                    CheckMark.Visible = default
+                end
 
                 local CheckLabel = Instance.new("TextLabel")
                 CheckLabel.Name = "Label"
@@ -1555,7 +1609,9 @@ function Prismarine:CreateWindow(options)
                 local Checked = default
 
                 local function UpdateCheckbox()
-                    CheckMark.Visible = Checked
+                    if CheckMark then
+                        CheckMark.Visible = Checked
+                    end
                     if Checked then
                         CheckBox.BackgroundColor3 = Colors.Primary
                         CheckBox.BackgroundTransparency = 0.8
