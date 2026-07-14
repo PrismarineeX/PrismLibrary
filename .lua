@@ -153,7 +153,7 @@ end
 function Prismarine:CreateWindow(options)
     options = options or {}
     local title = options.Title or "Prismarine"
-    local icon = options.Icon or "command"
+    local icon = options.Icon or "prism"
     local size = options.Size or UDim2.fromOffset(520, 340)
 
     local ScreenGui = Instance.new("ScreenGui")
@@ -172,7 +172,7 @@ function Prismarine:CreateWindow(options)
     MainFrame.BorderSizePixel = 0
     MainFrame.ClipsDescendants = true
     MainFrame.Parent = ScreenGui
-    RoundCorners(MainFrame, 10)
+    RoundCorners(MainFrame, 14)
     Stroke(MainFrame, Colors.Border, 1)
 
     local TopBar = Instance.new("Frame")
@@ -182,15 +182,16 @@ function Prismarine:CreateWindow(options)
     TopBar.BackgroundTransparency = 0.3
     TopBar.BorderSizePixel = 0
     TopBar.Parent = MainFrame
+    RoundCorners(TopBar, 14)
 
     local TopBarIcon = CreateIcon(icon, 18, TopBar, Colors.Primary)
-    TopBarIcon.Position = UDim2.fromOffset(10, 9)
+    TopBarIcon.Position = UDim2.fromOffset(12, 9)
     TopBarIcon.Name = "TopBarIcon"
 
     local TitleLabel = Instance.new("TextLabel")
     TitleLabel.Name = "Title"
     TitleLabel.Size = UDim2.new(0, 200, 1, 0)
-    TitleLabel.Position = UDim2.fromOffset(34, 0)
+    TitleLabel.Position = UDim2.fromOffset(36, 0)
     TitleLabel.BackgroundTransparency = 1
     TitleLabel.Text = title
     TitleLabel.TextColor3 = Colors.Text
@@ -255,24 +256,25 @@ function Prismarine:CreateWindow(options)
 
     local Sidebar = Instance.new("Frame")
     Sidebar.Name = "Sidebar"
-    Sidebar.Size = UDim2.new(0, 42, 1, 0)
+    Sidebar.Size = UDim2.new(0, 110, 1, 0)
     Sidebar.BackgroundColor3 = Colors.Background
     Sidebar.BackgroundTransparency = 0.5
     Sidebar.BorderSizePixel = 0
     Sidebar.Parent = ContentFrame
+    RoundCorners(Sidebar, 14)
 
     local SidebarLayout = Instance.new("UIListLayout")
-    SidebarLayout.Padding = UDim.new(0, 2)
+    SidebarLayout.Padding = UDim.new(0, 3)
     SidebarLayout.SortOrder = Enum.SortOrder.LayoutOrder
     SidebarLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
     SidebarLayout.Parent = Sidebar
 
-    Padding(Sidebar, 6, 6, 0, 0)
+    Padding(Sidebar, 8, 8, 4, 4)
 
     local TabContent = Instance.new("Frame")
     TabContent.Name = "TabContent"
-    TabContent.Size = UDim2.new(1, -42, 1, 0)
-    TabContent.Position = UDim2.fromOffset(42, 0)
+    TabContent.Size = UDim2.new(1, -110, 1, 0)
+    TabContent.Position = UDim2.fromOffset(110, 0)
     TabContent.BackgroundTransparency = 1
     TabContent.Parent = ContentFrame
 
@@ -288,9 +290,11 @@ function Prismarine:CreateWindow(options)
             if name == tabName then
                 tab.BackgroundColor3 = Colors.SurfaceLight
                 tab.Icon.ImageColor3 = Colors.Primary
+                tab.Label.TextColor3 = Colors.Primary
             else
                 tab.BackgroundColor3 = Colors.Background
                 tab.Icon.ImageColor3 = Colors.TextDim
+                tab.Label.TextColor3 = Colors.TextDim
             end
         end
         ActiveTab = tabName
@@ -308,18 +312,30 @@ function Prismarine:CreateWindow(options)
 
         local TabButton = Instance.new("TextButton")
         TabButton.Name = tabName
-        TabButton.Size = UDim2.fromOffset(34, 34)
+        TabButton.Size = UDim2.new(1, -8, 0, 32)
         TabButton.BackgroundColor3 = Colors.Background
         TabButton.BackgroundTransparency = 0.3
         TabButton.BorderSizePixel = 0
         TabButton.Text = ""
         TabButton.LayoutOrder = #Tabs + 1
         TabButton.Parent = Sidebar
-        RoundCorners(TabButton, 6)
+        RoundCorners(TabButton, 8)
 
-        local tabIconImg = CreateIcon(tabIcon, 18, TabButton, Colors.TextDim)
-        tabIconImg.Position = UDim2.fromOffset(8, 8)
+        local tabIconImg = CreateIcon(tabIcon, 16, TabButton, Colors.TextDim)
+        tabIconImg.Position = UDim2.fromOffset(10, 8)
         tabIconImg.Name = "Icon"
+
+        local tabLabel = Instance.new("TextLabel")
+        tabLabel.Name = "Label"
+        tabLabel.Size = UDim2.new(1, -36, 1, 0)
+        tabLabel.Position = UDim2.fromOffset(32, 0)
+        tabLabel.BackgroundTransparency = 1
+        tabLabel.Text = tabName
+        tabLabel.TextColor3 = Colors.TextDim
+        tabLabel.TextSize = 11
+        tabLabel.Font = Enum.Font.Gotham
+        tabLabel.TextXAlignment = Enum.TextXAlignment.Left
+        tabLabel.Parent = TabButton
 
         local Page = Instance.new("ScrollingFrame")
         Page.Name = tabName .. "Page"
@@ -347,7 +363,7 @@ function Prismarine:CreateWindow(options)
         end)
 
         Pages[tabName] = Page
-        Tabs[tabName] = {Button = TabButton, Icon = tabIconImg}
+        Tabs[tabName] = {Button = TabButton, Icon = tabIconImg, Label = tabLabel}
 
         if not ActiveTab then
             SelectTab(tabName)
@@ -369,7 +385,7 @@ function Prismarine:CreateWindow(options)
             Section.BorderSizePixel = 0
             Section.AutomaticSize = Enum.AutomaticSize.Y
             Section.Parent = Page
-            RoundCorners(Section, 8)
+            RoundCorners(Section, 10)
             Stroke(Section, Colors.Border, 1)
 
             local SectionHeader = Instance.new("TextButton")
@@ -543,7 +559,7 @@ function Prismarine:CreateWindow(options)
                 BindButton.BackgroundTransparency = 0.3
                 BindButton.BorderSizePixel = 0
                 BindButton.Text = default.Name ~= "Unknown" and default.Name or "None"
-                BindButton.TextColor3 = Colors.TextDim
+                                BindButton.TextColor3 = Colors.TextDim
                 BindButton.TextSize = 10
                 BindButton.Font = Enum.Font.Gotham
                 BindButton.Parent = BindFrame
@@ -1007,7 +1023,7 @@ function Prismarine:CreateWindow(options)
                             end
                         else
                             TextBox.Text = tostring(default)
-                                end
+                        end
                     else
                         callback(TextBox.Text)
                         if flag then
@@ -1161,7 +1177,7 @@ function Prismarine:CreateWindow(options)
     FloatingBtn.BorderSizePixel = 0
     FloatingBtn.Image = "rbxassetid://117448160741688"
     FloatingBtn.Parent = ScreenGui
-    RoundCorners(FloatingBtn, 10)
+    RoundCorners(FloatingBtn, 12)
 
     local FDragging = false
     local FDragStart = nil
